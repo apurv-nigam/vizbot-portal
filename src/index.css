@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════
+   THEME — Change colors here to re-theme the entire app
+   ═══════════════════════════════════════ */
+@theme {
+  /* Fonts */
+  --font-sans: "DM Sans", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Surfaces */
+  --color-canvas: #F4F6F8;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F8F9FB;
+
+  /* Borders */
+  --color-border: #E2E5EA;
+  --color-border-hover: #CBD1D9;
+
+  /* Text */
+  --color-text-primary: #1A1D23;
+  --color-text-secondary: #5F6B7A;
+  --color-text-muted: #94A0B0;
+  --color-text-disabled: #CBD1D9;
+
+  /* Accent — the primary brand color */
+  --color-accent: #3B6FC0;
+  --color-accent-hover: #2D5AA0;
+  --color-accent-light: #EBF1FA;
+  --color-accent-text: #1E3A6E;
+}
+
+/* ═══════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-text-primary);
+  background: var(--color-canvas);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tabular numbers for data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* App layout — sidebar offset via CSS custom property */
+@media (min-width: 1024px) {
+  .app-main {
+    margin-left: var(--sidebar-w, 250px);
+    transition: margin-left 250ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+}
