@@ -4,12 +4,16 @@ import {
   Search, MapPin, Plus, X, Upload, ChevronDown, AlertTriangle, Loader2,
   Users, Building2,
 } from "lucide-react";
-import { useSites, useGroups, useGroup, useUpdateSite } from "@/lib/queries";
+import { useSites, useGroups, useGroup, useUpdateSite, useTransferSite, useSearchMembers, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth0 } from "@auth0/auth0-react";
+import { apiRequest } from "@/lib/api";
 import { useUser } from "@/auth/UserProvider";
 import { can } from "@/lib/permissions";
-import { SITE_STATUS_CONFIG, getBreadcrumbPath } from "@/lib/constants";
+import { SITE_STATUS_CONFIG, getBreadcrumbPath, isLeafGroup } from "@/lib/constants";
 import AppShell from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 
 function StatusBadge({ status }) {
   const cfg = SITE_STATUS_CONFIG[status] || SITE_STATUS_CONFIG.Active;
@@ -17,6 +21,137 @@ function StatusBadge({ status }) {
     <span className="inline-block text-[11px] font-semibold px-2.5 py-[3px] rounded-md capitalize" style={{ color: cfg.color, background: cfg.bg }}>
       {status}
     </span>
+  );
+}
+
+function AssignToGroupModal({ open, onClose, siteIds, groups }) {
+  const [selectedGroupId, setSelectedGroupId] = useState("");
+  const [transferring, setTransferring] = useState(false);
+  const transferSite = useTransferSite();
+
+  const leafGroups = groups.filter((g) => isLeafGroup(groups, g.id));
+
+  async function handleAssign() {
+    if (!selectedGroupId || siteIds.length === 0) return;
+    setTransferring(true);
+    try {
+      for (const siteId of siteIds) {
+        await transferSite.mutateAsync({ siteId, targetGroupId: selectedGroupId });
+      }
+      setSelectedGroupId("");
+      onClose();
+    } catch {}
+    setTransferring(false);
+  }
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="p-6">
+        <h3 className="text-[18px] font-semibold text-text-primary mb-1">Assign to Group</h3>
+        <p className="text-[13px] text-text-secondary mb-5">
+          Assign {siteIds.length} site{siteIds.length !== 1 ? "s" : ""} to a group.
+        </p>
+        <div className="mb-5">
+          <label className="block text-[12px] font-semibold text-text-secondary mb-1.5">Group</label>
+          {leafGroups.length === 0 ? (
+            <p className="text-[13px] text-text-muted py-2">No groups available. Create a group first.</p>
+          ) : (
+            <div className="relative">
+              <select
+                value={selectedGroupId}
+                onChange={(e) => setSelectedGroupId(e.target.value)}
+                className="appearance-none w-full h-[42px] pl-3.5 pr-8 rounded-lg border-[1.5px] border-border bg-white text-[13px] cursor-pointer outline-none focus:border-accent"
+              >
+                <option value="">Select a group...</option>
+                {leafGroups.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name}{g.category ? ` (${g.category})` : ""}</option>
+                ))}
+              </select>
+              <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+            </div>
+          )}
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={transferring}>Cancel</Button>
+          <Button size="sm" onClick={handleAssign} disabled={transferring || !selectedGroupId}>
+            {transferring ? <Loader2 size={14} className="animate-spin" /> : `Assign ${siteIds.length} Site${siteIds.length !== 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function AssignTechnicianModal({ open, onClose, siteIds }) {
+  const { getAccessTokenSilently } = useAuth0();
+  const qc = useQueryClient();
+  const [search, setSearch] = useState("");
+  const [assigning, setAssigning] = useState(false);
+  const { data: searchResults = [], isLoading: searching } = useSearchMembers(search);
+
+  async function handleAssign(userId) {
+    if (siteIds.length === 0) return;
+    setAssigning(true);
+    try {
+      const token = await getAccessTokenSilently();
+      for (const siteId of siteIds) {
+        await apiRequest(`/api/v1/sites/${siteId}`, { token, method: "PATCH", body: { technician_id: userId } });
+      }
+      qc.invalidateQueries({ queryKey: ["sites"] });
+      setSearch("");
+      onClose();
+    } catch {}
+    setAssigning(false);
+  }
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="p-6">
+        <h3 className="text-[18px] font-semibold text-text-primary mb-1">Assign Technician</h3>
+        <p className="text-[13px] text-text-secondary mb-4">
+          Assign a technician to {siteIds.length} site{siteIds.length !== 1 ? "s" : ""}.
+        </p>
+        <div className="relative mb-3">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or email..."
+            className="h-[42px] w-full pl-9 pr-3 rounded-lg border-[1.5px] border-border bg-white text-[13px] outline-none focus:border-accent"
+            autoComplete="off"
+          />
+        </div>
+        <div className="max-h-[280px] overflow-y-auto border border-border rounded-lg">
+          {search.length < 2 ? (
+            <p className="py-6 text-center text-[13px] text-text-muted">Type at least 2 characters to search</p>
+          ) : searching ? (
+            <div className="flex items-center justify-center py-8"><Loader2 size={14} className="animate-spin text-text-muted" /></div>
+          ) : searchResults.length === 0 ? (
+            <p className="py-6 text-center text-[13px] text-text-muted">No members found</p>
+          ) : (
+            searchResults.map((m) => (
+              <button
+                key={m.user_id}
+                onClick={() => handleAssign(m.user_id)}
+                disabled={assigning}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-surface-hover transition-colors cursor-pointer border-b border-canvas last:border-0"
+              >
+                <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center shrink-0">
+                  <span className="text-[11px] font-bold text-accent-text">{(m.name || m.email)[0].toUpperCase()}</span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium text-text-primary truncate">{m.name || m.email}</p>
+                  {m.name && <p className="text-[12px] text-text-muted truncate">{m.email}</p>}
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+        <div className="flex justify-end mt-4">
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={assigning}>Cancel</Button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -177,6 +312,8 @@ export default function SitesPage() {
   const [stateFilter, setStateFilter] = useState("");
   const [selectedSite, setSelectedSite] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showTechModal, setShowTechModal] = useState(false);
 
   // Derive filters from URL params — reset when URL changes
   const assignFilter = searchParams.get("assigned") || "";
@@ -265,8 +402,8 @@ export default function SitesPage() {
               <div className="flex items-center gap-3 bg-[#1A1A1A] text-white rounded-[10px] px-4 py-2.5 mb-4">
                 <span className="text-[12px] font-medium">{selectedIds.length} site{selectedIds.length !== 1 ? "s" : ""} selected</span>
                 <div className="flex-1" />
-                <Button size="sm" className="bg-transparent border border-[#666] text-white hover:bg-white/10 h-[30px] text-[11px]">Assign to Group</Button>
-                <Button size="sm" className="bg-transparent border border-[#666] text-white hover:bg-white/10 h-[30px] text-[11px]">Assign Technician</Button>
+                <Button size="sm" className="bg-transparent border border-[#666] text-white hover:bg-white/10 h-[30px] text-[11px]" onClick={() => setShowAssignModal(true)}>Assign to Group</Button>
+                <Button size="sm" className="bg-transparent border border-[#666] text-white hover:bg-white/10 h-[30px] text-[11px]" onClick={() => setShowTechModal(true)}>Assign Technician</Button>
                 <button onClick={() => setSelectedIds([])} className="text-[#999] hover:text-white cursor-pointer text-[12px]">Clear</button>
               </div>
             )}
@@ -402,6 +539,19 @@ export default function SitesPage() {
           <SiteDetailPanel site={selectedSite} groups={groups} onClose={() => setSelectedSite(null)} canManage={can.manageSites(vizUser)} onCreateJob={(siteId) => navigate(`/jobs/new?site_id=${siteId}`)} />
         )}
       </div>
+
+      <AssignToGroupModal
+        open={showAssignModal}
+        onClose={() => { setShowAssignModal(false); setSelectedIds([]); }}
+        siteIds={selectedIds}
+        groups={groups}
+      />
+
+      <AssignTechnicianModal
+        open={showTechModal}
+        onClose={() => { setShowTechModal(false); setSelectedIds([]); }}
+        siteIds={selectedIds}
+      />
     </AppShell>
   );
 }
