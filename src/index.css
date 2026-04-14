@@ -8,6 +8,20 @@
   --font-sans: "DM Sans", -apple-system, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
+  /* Type scale */
+  --text-2xs: 9px;
+  --text-xs: 10px;
+  --text-sm: 11px;
+  --text-base: 12px;
+  --text-md: 13px;
+  --text-lg: 14px;
+  --text-xl: 16px;
+  --text-2xl: 18px;
+  --text-3xl: 20px;
+  --text-4xl: 24px;
+  --text-5xl: 28px;
+  --text-6xl: 32px;
+
   /* Surfaces */
   --color-canvas: #F4F6F8;
   --color-surface: #FFFFFF;
@@ -19,7 +33,7 @@
 
   /* Text */
   --color-text-primary: #1A1D23;
-  --color-text-secondary: #5F6B7A;
+  --color-text-secondary: #374151;
   --color-text-muted: #94A0B0;
   --color-text-disabled: #CBD1D9;
 

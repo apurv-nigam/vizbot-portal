@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { useWorkflow } from "@/lib/queries";
 import { TYPE_CONFIG } from "@/lib/constants";
-import AppShell from "@/components/AppShell";
+import AppShell from "@/components/ProjectShell";
 import { Button } from "@/components/ui/button";
 
 const FIELD_TYPE_LABELS = {

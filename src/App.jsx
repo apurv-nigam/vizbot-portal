@@ -19,19 +19,20 @@ const queryClient = new QueryClient({
 import LandingPage from "@/pages/LandingPage";
 import CallbackPage from "@/pages/CallbackPage";
 import InvitePage from "@/pages/InvitePage";
-import DashboardPage from "@/pages/DashboardPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import ProfilePage from "@/pages/ProfilePage";
-import SitesPage from "@/pages/SitesPage";
-import GroupsPage from "@/pages/GroupsPage";
-import GroupDetailPage from "@/pages/GroupDetailPage";
+import ProjectPickerPage from "@/pages/ProjectPickerPage";
 import CreateWorkflowPage from "@/pages/CreateWorkflowPage";
 import WorkflowDetailPage from "@/pages/WorkflowDetailPage";
 import WorkflowBuilderPage from "@/pages/WorkflowBuilderPage";
+import WorkflowsPage from "@/pages/WorkflowsPage";
 import CreateJobPage from "@/pages/CreateJobPage";
 import JobDetailPage from "@/pages/JobDetailPage";
-import JobsPage from "@/pages/JobsPage";
-import WorkflowsPage from "@/pages/WorkflowsPage";
+import ProjectOverviewPage from "@/pages/project/ProjectOverviewPage";
+import ProjectSitesPage from "@/pages/project/ProjectSitesPage";
+import SiteDetailPage from "@/pages/project/SiteDetailPage";
+import ProjectJobsPage from "@/pages/project/ProjectJobsPage";
+import ProjectSettingsPage from "@/pages/project/ProjectSettingsPage";
 import AuthGuard from "@/auth/AuthGuard";
 
 const ViewerPage = lazy(() => import("@/pages/ViewerPage"));
@@ -64,38 +65,44 @@ export default function App() {
 
             {/* Auth */}
             <Route path="/onboarding" element={<Guarded><OnboardingPage /></Guarded>} />
-            <Route path="/dashboard" element={<Guarded><DashboardPage /></Guarded>} />
             <Route path="/profile" element={<Guarded><ProfilePage /></Guarded>} />
 
-            {/* Sites */}
-            <Route path="/sites" element={<Guarded><SitesPage /></Guarded>} />
+            {/* Project picker (new home screen) */}
+            <Route path="/projects" element={<Guarded><ProjectPickerPage /></Guarded>} />
+            <Route path="/dashboard" element={<Navigate to="/projects" replace />} />
 
-            {/* Groups (hierarchy) */}
-            <Route path="/groups" element={<Guarded><GroupsPage /></Guarded>} />
-            <Route path="/groups/:id" element={<Guarded><GroupDetailPage /></Guarded>} />
+            {/* Project-scoped views */}
+            <Route path="/projects/:id" element={<Guarded><ProjectOverviewPage /></Guarded>} />
+            <Route path="/projects/:id/sites" element={<Guarded><ProjectSitesPage /></Guarded>} />
+            <Route path="/projects/:id/sites/:siteId" element={<Guarded><SiteDetailPage /></Guarded>} />
+            <Route path="/projects/:id/jobs" element={<Guarded><ProjectJobsPage /></Guarded>} />
+            <Route path="/projects/:id/groups" element={<Guarded><ProjectSettingsPage /></Guarded>} />
+            <Route path="/projects/:id/members" element={<Guarded><ProjectSettingsPage /></Guarded>} />
+            <Route path="/projects/:id/settings" element={<Guarded><ProjectSettingsPage /></Guarded>} />
+            <Route path="/projects/:id/workflows" element={<Guarded><WorkflowsPage /></Guarded>} />
+            <Route path="/projects/:id/workflows/new" element={<Guarded><CreateWorkflowPage /></Guarded>} />
+            <Route path="/projects/:id/workflows/:wid" element={<Guarded><WorkflowDetailPage /></Guarded>} />
+            <Route path="/projects/:id/workflows/:wid/builder" element={<Guarded><WorkflowBuilderPage /></Guarded>} />
 
-            {/* Workflows (new routes) */}
-            <Route path="/workflows" element={<Guarded><WorkflowsPage /></Guarded>} />
-            <Route path="/workflows/new" element={<Guarded><CreateWorkflowPage /></Guarded>} />
-            <Route path="/workflows/:id" element={<Guarded><WorkflowDetailPage /></Guarded>} />
-            <Route path="/workflows/:id/builder" element={<Guarded><WorkflowBuilderPage /></Guarded>} />
-            <Route path="/workflows/:id/viewer" element={<Guarded><Suspense fallback={<LazyFallback />}><ViewerPage /></Suspense></Guarded>} />
+            {/* Legacy org-level workflow routes → redirect to projects */}
+            <Route path="/workflows" element={<Navigate to="/projects" replace />} />
+            <Route path="/workflows/*" element={<Navigate to="/projects" replace />} />
+            <Route path="/sites" element={<Navigate to="/projects" replace />} />
+            <Route path="/groups" element={<Navigate to="/projects" replace />} />
+            <Route path="/groups/:id" element={<Navigate to="/projects" replace />} />
 
-            {/* Jobs (flat) */}
-            <Route path="/jobs" element={<Guarded><JobsPage /></Guarded>} />
-            <Route path="/jobs/new" element={<Guarded><CreateJobPage /></Guarded>} />
+            {/* Jobs inside projects */}
+            <Route path="/projects/:id/jobs/new" element={<Guarded><CreateJobPage /></Guarded>} />
+            <Route path="/projects/:id/jobs/:jobId" element={<Guarded><JobDetailPage /></Guarded>} />
+
+            {/* Legacy flat job routes */}
+            <Route path="/jobs" element={<Navigate to="/projects" replace />} />
+            <Route path="/jobs/new" element={<Navigate to="/projects" replace />} />
             <Route path="/jobs/:jobId" element={<Guarded><JobDetailPage /></Guarded>} />
 
             {/* Legacy redirects */}
-            <Route path="/projects" element={<Navigate to="/workflows" replace />} />
-            <Route path="/projects/new" element={<Navigate to="/workflows/new" replace />} />
-            <Route path="/projects/:id" element={<Guarded><WorkflowDetailPage /></Guarded>} />
-            <Route path="/projects/:id/workflow" element={<Guarded><WorkflowBuilderPage /></Guarded>} />
-            <Route path="/projects/:id/viewer" element={<Guarded><Suspense fallback={<LazyFallback />}><ViewerPage /></Suspense></Guarded>} />
-            <Route path="/projects/:id/jobs/new" element={<Guarded><CreateJobPage /></Guarded>} />
-            <Route path="/projects/:id/jobs/:jobId" element={<Guarded><JobDetailPage /></Guarded>} />
-            <Route path="/teams" element={<Navigate to="/groups" replace />} />
-            <Route path="/teams/:id" element={<Navigate to="/groups" replace />} />
+            <Route path="/teams" element={<Navigate to="/projects" replace />} />
+            <Route path="/teams/:id" element={<Navigate to="/projects" replace />} />
           </Routes>
         </UserProvider>
         </QueryClientProvider>

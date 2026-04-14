@@ -44,7 +44,7 @@ export default function ViewerPage() {
     return (
       <div className="min-h-screen bg-canvas flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[14px] text-[#DC2626] mb-4">{error || "Workflow not found"}</p>
+          <p className="text-lg text-[#DC2626] mb-4">{error || "Workflow not found"}</p>
           <Button variant="secondary" onClick={() => navigate(`/workflows/${id}`)}>Back to Workflow</Button>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function ViewerPage() {
     return (
       <div className="min-h-screen bg-canvas flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[14px] text-text-secondary mb-4">No viewer data configured for this workflow.</p>
+          <p className="text-lg text-text-secondary mb-4">No viewer data configured for this workflow.</p>
           <Button variant="secondary" onClick={() => navigate(`/workflows/${id}`)}>Back to Workflow</Button>
         </div>
       </div>

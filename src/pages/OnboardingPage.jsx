@@ -68,16 +68,16 @@ export default function OnboardingPage() {
             >
               <span className="text-white font-extrabold text-sm">V</span>
             </div>
-            <span className="text-[17px] font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
+            <span className="text-xl font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-9">
-            <h1 className="text-[22px] font-bold text-text-primary tracking-[-0.3px] mb-1">
+            <h1 className="text-3xl font-bold text-text-primary tracking-[-0.3px] mb-1">
               Welcome to Vizbot
             </h1>
-            <p className="text-[14px] text-text-secondary mb-7">
+            <p className="text-lg text-text-secondary mb-7">
               {showInvites
                 ? "You've been invited to join a team."
                 : "Set up your account to get started."}
@@ -105,12 +105,12 @@ export default function OnboardingPage() {
                           <Building2 size={18} className={isSelected ? "text-accent" : "text-text-muted"} />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className={`text-[15px] font-[620] tracking-[-0.15px] ${
+                          <p className={`text-xl font-[620] tracking-[-0.15px] ${
                             isSelected ? "text-accent" : "text-text-primary"
                           }`}>
                             {inv.org_name}
                           </p>
-                          <p className="text-[12px] text-text-muted mt-0.5">
+                          <p className="text-base text-text-muted mt-0.5">
                             Role: <span className="capitalize">{inv.role}</span>
                             {inv.invited_by_name && <> &middot; Invited by {inv.invited_by_name}</>}
                           </p>
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
             )}
 
             {/* Name input */}
-            <label className="block text-[13px] font-semibold text-text-secondary mb-1.5">Your name</label>
+            <label className="block text-md font-semibold text-text-secondary mb-1.5">Your name</label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
               }}
             />
 
-            {error && <p className="text-[12px] text-[#DC2626] mt-2">{error}</p>}
+            {error && <p className="text-base text-[#DC2626] mt-2">{error}</p>}
 
             {/* Primary action */}
             {showInvites && selectedInvite ? (
@@ -170,7 +170,7 @@ export default function OnboardingPage() {
                 if (showInvites) setSelectedInvite(null);
                 else if (pendingInvitations.length === 1) setSelectedInvite(pendingInvitations[0]);
               }}
-              className="text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer"
+              className="text-md font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer"
             >
               {showInvites
                 ? "or create your own workspace instead"

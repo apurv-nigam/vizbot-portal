@@ -14,8 +14,8 @@ export default function ReassignModal({ open, onClose, onSubmit, loading, curren
   return (
     <Modal open={open} onClose={onClose}>
       <div className="p-6">
-        <h3 className="text-[16px] font-semibold text-text-primary mb-1">Reassign Job</h3>
-        <p className="text-[13px] text-text-secondary mb-4">Search for a team member to reassign this job to.</p>
+        <h3 className="text-xl font-semibold text-text-primary mb-1">Reassign Job</h3>
+        <p className="text-md text-text-secondary mb-4">Search for a team member to reassign this job to.</p>
 
         <div className="relative mb-3">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled" />
@@ -24,13 +24,13 @@ export default function ReassignModal({ open, onClose, onSubmit, loading, curren
 
         <div className="max-h-[280px] overflow-y-auto border border-border rounded-lg">
           {search.length < 2 ? (
-            <p className="py-6 text-center text-[13px] text-text-muted">Type at least 2 characters to search</p>
+            <p className="py-6 text-center text-md text-text-muted">Type at least 2 characters to search</p>
           ) : searching ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 size={14} className="animate-spin text-text-muted" />
             </div>
           ) : filtered.length === 0 ? (
-            <p className="py-6 text-center text-[13px] text-text-muted">No members found</p>
+            <p className="py-6 text-center text-md text-text-muted">No members found</p>
           ) : (
             filtered.map((m) => (
               <button
@@ -40,11 +40,11 @@ export default function ReassignModal({ open, onClose, onSubmit, loading, curren
                 className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-surface-hover transition-colors cursor-pointer border-b border-canvas last:border-0"
               >
                 <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center shrink-0">
-                  <span className="text-[11px] font-bold text-accent">{(m.name || m.email)[0].toUpperCase()}</span>
+                  <span className="text-sm font-bold text-accent">{(m.name || m.email)[0].toUpperCase()}</span>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-text-primary truncate">{m.name || m.email}</p>
-                  {m.name && <p className="text-[12px] text-text-muted truncate">{m.email}</p>}
+                  <p className="text-md font-medium text-text-primary truncate">{m.name || m.email}</p>
+                  {m.name && <p className="text-base text-text-muted truncate">{m.email}</p>}
                 </div>
               </button>
             ))

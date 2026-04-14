@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth0 } from "@auth0/auth0-react";
 import { apiRequest } from "./api";
 
@@ -20,7 +20,7 @@ function buildQs(filters) {
 
 // ── Query keys ──
 export const queryKeys = {
-  workflows: () => ["workflows"],
+  workflows: (filters) => ["workflows", filters || {}],
   workflow: (id) => ["workflows", id],
   groups: () => ["groups"],
   group: (id) => ["groups", id],
@@ -39,11 +39,11 @@ export const queryKeys = {
 // ═══════════════════════════════════════
 
 // ── Workflows (formerly projects) ──
-export function useWorkflows() {
+export function useWorkflows(filters = {}) {
   const authFetch = useAuthFetch();
   return useQuery({
-    queryKey: queryKeys.workflows(),
-    queryFn: () => authFetch("/api/v1/workflows"),
+    queryKey: queryKeys.workflows(filters),
+    queryFn: () => authFetch(`/api/v1/workflows${buildQs(filters)}`),
     select: (data) => (Array.isArray(data) ? data : []),
   });
 }
@@ -57,11 +57,12 @@ export function useWorkflow(id) {
 }
 
 // ── Groups (formerly teams) ──
-export function useGroups() {
+export function useGroups(filters = {}) {
   const authFetch = useAuthFetch();
+  const qs = buildQs(filters);
   return useQuery({
-    queryKey: queryKeys.groups(),
-    queryFn: () => authFetch("/api/v1/groups"),
+    queryKey: ["groups", filters],
+    queryFn: () => authFetch(`/api/v1/groups${qs}`),
     select: (data) => (Array.isArray(data) ? data : []),
   });
 }
@@ -102,12 +103,41 @@ export function useSite(id) {
 }
 
 // ── Jobs (flat) ──
+// Job stats — aggregated counts for charts/dashboards.
+export function useJobStats(filters = {}) {
+  const authFetch = useAuthFetch();
+  return useQuery({
+    queryKey: ["jobs", "stats", filters],
+    queryFn: () => authFetch(`/api/v1/jobs/stats${buildQs(filters)}`),
+  });
+}
+
+// Returns { items, total, page, limit, has_more } from paginated response.
+// Backward compat: if backend returns a plain array (non-paginated endpoints), wraps it.
 export function useJobs(filters = {}) {
   const authFetch = useAuthFetch();
   return useQuery({
     queryKey: queryKeys.jobs(filters),
-    queryFn: () => authFetch(`/api/v1/jobs${buildQs(filters)}`).catch(() => []),
-    select: (data) => (Array.isArray(data) ? data : []),
+    queryFn: () => authFetch(`/api/v1/jobs${buildQs(filters)}`).catch(() => ({ items: [], total: 0 })),
+    select: (data) => {
+      if (Array.isArray(data)) return { items: data, total: data.length, has_more: false };
+      return { items: data.items || [], total: data.total || 0, page: data.page, limit: data.limit, has_more: data.has_more || false };
+    },
+  });
+}
+
+// Infinite scroll hook for job list pages.
+export function useJobsInfinite(filters = {}) {
+  const authFetch = useAuthFetch();
+  const { page, ...rest } = filters;
+  return useInfiniteQuery({
+    queryKey: ["jobs", "infinite", rest],
+    queryFn: ({ pageParam = 1 }) => authFetch(`/api/v1/jobs${buildQs({ ...rest, page: pageParam, limit: 50 })}`).catch(() => ({ items: [], total: 0, has_more: false })),
+    getNextPageParam: (lastPage) => lastPage.has_more ? (lastPage.page || 1) + 1 : undefined,
+    select: (data) => ({
+      items: data.pages.flatMap((p) => p.items || (Array.isArray(p) ? p : [])),
+      total: data.pages[0]?.total || 0,
+    }),
   });
 }
 export function useJob(jobId) {
@@ -183,7 +213,7 @@ export function useCreateWorkflow() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body) => authFetch("/api/v1/workflows", { method: "POST", body }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workflows() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["workflows"] }),
   });
 }
 export const useCreateProject = useCreateWorkflow;

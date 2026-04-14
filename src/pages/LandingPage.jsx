@@ -23,7 +23,7 @@ export default function LandingPage() {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-light mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-          <span className="text-[13px] font-semibold text-accent">
+          <span className="text-md font-semibold text-accent">
             Now supporting image, video & point cloud
           </span>
         </div>
@@ -34,7 +34,7 @@ export default function LandingPage() {
           <span className="text-accent">train better models</span>
         </h1>
 
-        <p className="text-[18px] text-text-secondary mt-6 max-w-[520px] mx-auto leading-[1.6]">
+        <p className="text-2xl text-text-secondary mt-6 max-w-[520px] mx-auto leading-[1.6]">
           Label images, videos, and point clouds collaboratively.
           Built for production ML workflows.
         </p>
@@ -64,8 +64,8 @@ export default function LandingPage() {
               >
                 <span className="text-2xl">{t.emoji}</span>
               </div>
-              <h3 className="text-[15px] font-[620] text-text-primary mb-1.5 tracking-[-0.15px]">{t.title}</h3>
-              <p className="text-[13px] text-text-muted leading-relaxed">{t.desc}</p>
+              <h3 className="text-xl font-[620] text-text-primary mb-1.5 tracking-[-0.15px]">{t.title}</h3>
+              <p className="text-md text-text-muted leading-relaxed">{t.desc}</p>
             </div>
           ))}
         </div>

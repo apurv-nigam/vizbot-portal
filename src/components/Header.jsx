@@ -30,7 +30,7 @@ export default function Header() {
             >
               <span className="text-white font-extrabold text-sm">V</span>
             </div>
-            <span className="text-[17px] font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
+            <span className="text-xl font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -38,7 +38,7 @@ export default function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="px-3 py-1.5 rounded-md text-[14px] font-medium text-text-secondary hover:text-text-primary transition-colors duration-200"
+                className="px-3 py-1.5 rounded-md text-lg font-medium text-text-secondary hover:text-text-primary transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -72,7 +72,7 @@ export default function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="block text-[14px] font-medium py-2 px-3 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors duration-200"
+                className="block text-lg font-medium py-2 px-3 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors duration-200"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}

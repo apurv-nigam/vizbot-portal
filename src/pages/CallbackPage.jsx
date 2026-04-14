@@ -35,7 +35,7 @@ export default function CallbackPage() {
           try {
             const acceptData = await apiRequest(`/api/v1/invitations/${storedCode}/accept`, { token, method: "POST" });
             setUser({ ...data, ...acceptData, org_id: acceptData.org_id, org_name: acceptData.org_name, role: acceptData.role });
-            navigate("/dashboard", { replace: true });
+            navigate("/projects", { replace: true });
             return;
           } catch {
             // Invite code invalid/expired — continue with normal flow
@@ -45,7 +45,7 @@ export default function CallbackPage() {
         setUser(data);
 
         if (data.org_id) {
-          navigate("/dashboard", { replace: true });
+          navigate("/projects", { replace: true });
         } else {
           navigate("/onboarding", { replace: true });
         }
@@ -90,7 +90,7 @@ export default function CallbackPage() {
               >
                 <span className="text-white font-extrabold text-sm">V</span>
               </div>
-              <span className="text-[17px] font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
+              <span className="text-xl font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
             </div>
           </div>
           <Card>
@@ -98,14 +98,14 @@ export default function CallbackPage() {
               <div className="h-12 w-12 rounded-xl bg-accent-light mx-auto mb-5 flex items-center justify-center">
                 <Mail size={22} className="text-accent" />
               </div>
-              <h1 className="text-[18px] font-bold text-text-primary mb-2 tracking-[-0.3px]">Verify your email</h1>
-              <p className="text-[14px] text-text-secondary leading-relaxed mb-1">
+              <h1 className="text-2xl font-bold text-text-primary mb-2 tracking-[-0.3px]">Verify your email</h1>
+              <p className="text-lg text-text-secondary leading-relaxed mb-1">
                 We sent a verification email to
               </p>
-              <p className="text-[14px] font-semibold text-text-primary mb-5 font-mono">
+              <p className="text-lg font-semibold text-text-primary mb-5 font-mono">
                 {user?.email}
               </p>
-              <p className="text-[13px] text-text-muted leading-relaxed mb-7">
+              <p className="text-md text-text-muted leading-relaxed mb-7">
                 Click the link in the email to verify your account, then come back and refresh this page.
               </p>
               <Button onClick={() => loginWithRedirect()} className="w-full gap-2">
@@ -115,7 +115,7 @@ export default function CallbackPage() {
               <button
                 onClick={handleResendVerification}
                 disabled={resending || resent}
-                className="block w-full text-center mt-3 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer disabled:cursor-default disabled:text-text-disabled"
+                className="block w-full text-center mt-3 text-md font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer disabled:cursor-default disabled:text-text-disabled"
               >
                 {resent ? "Verification email sent" : resending ? "Sending..." : "Resend verification email"}
               </button>
@@ -139,7 +139,7 @@ export default function CallbackPage() {
               >
                 <span className="text-white font-extrabold text-sm">V</span>
               </div>
-              <span className="text-[17px] font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
+              <span className="text-xl font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
             </div>
           </div>
           <Card>
@@ -147,8 +147,8 @@ export default function CallbackPage() {
               <div className="h-10 w-10 rounded-full bg-[#FEF2F2] mx-auto mb-4 flex items-center justify-center">
                 <AlertCircle size={18} className="text-[#DC2626]" />
               </div>
-              <h1 className="text-[15px] font-[620] text-text-primary mb-1 tracking-[-0.15px]">Something went wrong</h1>
-              <p className="text-[14px] text-text-secondary mb-5 leading-relaxed">{error?.message || syncError}</p>
+              <h1 className="text-xl font-[620] text-text-primary mb-1 tracking-[-0.15px]">Something went wrong</h1>
+              <p className="text-lg text-text-secondary mb-5 leading-relaxed">{error?.message || syncError}</p>
               <Button variant="secondary" onClick={() => window.location.replace("/")}>Back to home</Button>
             </CardContent>
           </Card>
@@ -159,16 +159,13 @@ export default function CallbackPage() {
 
   // Loading
   return (
-    <div className="min-h-screen bg-canvas flex items-center justify-center">
-      <div className="flex flex-col items-center gap-5">
-        <div
-          className="w-[30px] h-[30px] rounded-lg flex items-center justify-center"
-          style={{ background: "var(--color-accent)" }}
-        >
-          <span className="text-white font-extrabold text-sm">V</span>
+    <div className="fixed inset-0 bg-canvas flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-accent">
+          <span className="text-white font-extrabold text-xl">V</span>
         </div>
-        <Loader2 size={16} className="animate-spin text-text-muted" />
-        <p className="text-[13px] font-medium text-text-muted">Signing you in...</p>
+        <Loader2 size={18} className="animate-spin text-accent" />
+        <p className="text-lg font-medium text-text-secondary">Signing you in...</p>
       </div>
     </div>
   );

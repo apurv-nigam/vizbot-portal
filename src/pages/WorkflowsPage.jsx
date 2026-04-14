@@ -4,7 +4,7 @@ import { useWorkflows } from "@/lib/queries";
 import { useUser } from "@/auth/UserProvider";
 import { can } from "@/lib/permissions";
 import { TYPE_CONFIG } from "@/lib/constants";
-import AppShell from "@/components/AppShell";
+import AppShell from "@/components/ProjectShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 

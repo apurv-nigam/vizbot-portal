@@ -3,7 +3,8 @@
  *
  * Two layers:
  *   1. Org role (owner / admin / member) — platform-wide permissions
- *   2. Group role (admin / member / viewer) — per-group permissions
+ *   2. Project role (admin / surveyor) — per-project permissions
+ *   Groups have no separate roles; members inherit their project role.
  *
  * The backend enforces these on every API call (returns 403).
  * The frontend uses these to hide/show UI elements so users
@@ -40,16 +41,16 @@ function deleteGroup(user) { return isOrgOwner(user); }
 /** Import/create/delete sites */
 function manageSites(user) { return isOrgAdminOrAbove(user); }
 
-/** Create jobs (single or bulk) */
-function createJob(user) { return isOrgAdminOrAbove(user); }
+/** Create jobs (single or bulk) — org admin or group admin */
+function createJob(user, groupRole) { return isOrgAdminOrAbove(user) || groupRole === "admin"; }
 
-/** Review, rework, reassign, resend jobs */
-function manageJobs(user) { return isOrgAdminOrAbove(user); }
+/** Review, rework, reassign, resend jobs — org admin or group admin */
+function manageJobs(user, groupRole) { return isOrgAdminOrAbove(user) || groupRole === "admin"; }
 
-// ── Group-level permissions ──
-// Group roles: "admin" (manages group) or "surveyor" (field worker).
-// These check EITHER org-level admin OR group-level admin.
-// `groupRole` is the user's role within a specific group (from group.members).
+// ── Project-level permissions ──
+// Project roles: "admin" (manages project/groups) or "surveyor" (field worker).
+// Groups have no separate roles — members inherit their project role.
+// `groupRole` below is actually the user's role in the *project* (passed from the page).
 
 /** Add/remove members in a group */
 function manageGroupMembers(user, groupRole) {
@@ -79,10 +80,10 @@ function viewGroup(user, groupRole) {
 // ── Utility ──
 
 /**
- * Find the current user's role in a group.
- * @param {object} group — group detail response (has .members array)
+ * Find the current user's role in a project.
+ * @param {object} group — project detail response (has .members array)
  * @param {object} user — vizUser from UserProvider (has .user_id)
- * @returns {string|null} — "admin", "member", "viewer", or null
+ * @returns {string|null} — "admin", "surveyor", or null
  */
 export function getMyGroupRole(group, user) {
   if (!group?.members || !user?.user_id) return null;

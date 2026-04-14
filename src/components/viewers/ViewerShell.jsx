@@ -35,7 +35,7 @@ export default function ViewerShell({ workflowName, workflowId, oriUrl, pointClo
       <header className="shrink-0 h-12 bg-white border-b border-border flex items-center px-4 gap-3 z-30">
         <button
           onClick={() => navigate(`/workflows/${workflowId}`)}
-          className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer"
+          className="flex items-center gap-1.5 text-md font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer"
         >
           <ArrowLeft size={14} />
           <span className="hidden sm:inline">{workflowName || "Workflow"}</span>
@@ -48,7 +48,7 @@ export default function ViewerShell({ workflowName, workflowId, oriUrl, pointClo
           <div className="flex items-center bg-canvas rounded-lg p-0.5">
             <button
               onClick={() => switchView("2d")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-base font-semibold transition-all duration-200 cursor-pointer ${
                 activeView === "2d"
                   ? "bg-white text-accent shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
                   : "text-text-muted hover:text-text-secondary"
@@ -58,7 +58,7 @@ export default function ViewerShell({ workflowName, workflowId, oriUrl, pointClo
             </button>
             <button
               onClick={() => switchView("3d")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-base font-semibold transition-all duration-200 cursor-pointer ${
                 activeView === "3d"
                   ? "bg-white text-accent shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
                   : "text-text-muted hover:text-text-secondary"

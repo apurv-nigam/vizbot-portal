@@ -24,7 +24,7 @@ function CardHeader({ className, ...props }) {
 function CardTitle({ className, ...props }) {
   return (
     <h3
-      className={cn("text-[15px] font-[620] text-text-primary tracking-[-0.15px]", className)}
+      className={cn("text-xl font-[620] text-text-primary tracking-[-0.15px]", className)}
       {...props}
     />
   );
@@ -32,7 +32,7 @@ function CardTitle({ className, ...props }) {
 
 function CardDescription({ className, ...props }) {
   return (
-    <p className={cn("text-[14px] text-text-secondary", className)} {...props} />
+    <p className={cn("text-lg text-text-secondary", className)} {...props} />
   );
 }
 

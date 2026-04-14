@@ -210,7 +210,7 @@ export default function PotreeViewer({ pointCloudUrl, className }) {
         <div className="h-10 w-10 rounded-full bg-[#FEF2F2] flex items-center justify-center mb-3">
           <AlertCircle size={18} className="text-[#DC2626]" />
         </div>
-        <p className="text-[14px] text-text-muted mb-4 text-center max-w-xs">{error}</p>
+        <p className="text-lg text-text-muted mb-4 text-center max-w-xs">{error}</p>
         <Button
           variant="secondary"
           size="sm"
@@ -233,7 +233,7 @@ export default function PotreeViewer({ pointCloudUrl, className }) {
       {loading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70">
           <Loader2 size={20} className="animate-spin text-white mb-2" />
-          <p className="text-[13px] font-medium text-text-muted">Loading point cloud...</p>
+          <p className="text-md font-medium text-text-muted">Loading point cloud...</p>
         </div>
       )}
     </div>

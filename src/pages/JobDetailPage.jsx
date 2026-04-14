@@ -5,10 +5,10 @@ import {
   Clock, Circle, CheckCircle2,
   Send, RotateCcw, UserCheck,
 } from "lucide-react";
-import { useJob, useReviewJob, useReworkJob, useReassignJob, useResendJob } from "@/lib/queries";
-import AppShell from "@/components/AppShell";
+import { useJob, useGroup, useReviewJob, useReworkJob, useReassignJob, useResendJob } from "@/lib/queries";
+import ProjectShell from "@/components/ProjectShell";
 import { useUser } from "@/auth/UserProvider";
-import { can } from "@/lib/permissions";
+import { can, getMyGroupRole } from "@/lib/permissions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/modal";
 import TaskSection from "@/components/JobActions/TaskSection";
@@ -25,9 +25,12 @@ const STATUS_CONFIG = {
 export default function JobDetailPage() {
   const { vizUser } = useUser();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const { id: projectId, jobId } = useParams();
+  const basePath = projectId ? `/projects/${projectId}` : "";
 
   const { data: job, isLoading: jobLoading, error: jobError } = useJob(jobId);
+  const { data: project } = useGroup(projectId);
+  const myGroupRole = getMyGroupRole(project, vizUser);
 
   const reviewMutation = useReviewJob(jobId);
   const reworkMutation = useReworkJob(jobId);
@@ -76,22 +79,22 @@ export default function JobDetailPage() {
 
   if (loading) {
     return (
-      <AppShell>
+      <ProjectShell>
         <div className="flex items-center justify-center py-32">
           <Loader2 size={16} className="animate-spin text-text-muted" />
         </div>
-      </AppShell>
+      </ProjectShell>
     );
   }
 
   if (error || !job) {
     return (
-      <AppShell>
+      <ProjectShell>
         <div className="max-w-[600px] mx-auto text-center py-20">
-          <p className="text-[14px] text-[#DC2626] mb-4">{error || "Job not found"}</p>
-          <Button variant="secondary" onClick={() => navigate("/jobs")}>Back to Jobs</Button>
+          <p className="text-lg text-[#DC2626] mb-4">{error || "Job not found"}</p>
+          <Button variant="secondary" onClick={() => navigate(`${basePath}/jobs`)}>Back to Jobs</Button>
         </div>
-      </AppShell>
+      </ProjectShell>
     );
   }
 
@@ -114,18 +117,18 @@ export default function JobDetailPage() {
   const isSubmitted = job.status === "submitted";
 
   return (
-    <AppShell>
+    <ProjectShell>
       <div className="max-w-[760px] mx-auto">
         <button
-          onClick={() => navigate("/jobs")}
-          className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer mb-6"
+          onClick={() => navigate(`${basePath}/jobs`)}
+          className="flex items-center gap-1.5 text-md font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer mb-6"
         >
           <ArrowLeft size={14} />
           Jobs
         </button>
 
         {actionSuccess && (
-          <div className="mb-4 flex items-center gap-2 bg-[#ECFDF5] border border-[#16A34A]/20 text-[#16A34A] rounded-lg px-4 py-2.5 text-[13px] font-medium animate-[fadeIn_0.15s_ease-out]">
+          <div className="mb-4 flex items-center gap-2 bg-[#ECFDF5] border border-[#16A34A]/20 text-[#16A34A] rounded-lg px-4 py-2.5 text-md font-medium animate-[fadeIn_0.15s_ease-out]">
             <CheckCircle2 size={14} />
             {actionSuccess}
           </div>
@@ -135,15 +138,15 @@ export default function JobDetailPage() {
         <div className="mb-8">
           <div className="flex items-start justify-between mb-5">
             <div>
-              <h1 className="text-[24px] font-bold text-text-primary tracking-[-0.3px] leading-tight">{job.title}</h1>
+              <h1 className="text-4xl font-bold text-text-primary tracking-[-0.3px] leading-tight">{job.title}</h1>
               {job.rework_count > 0 && (
-                <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-[#CA8A04] bg-[#FEFCE8] px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-[#CA8A04] bg-[#FEFCE8] px-2 py-0.5 rounded-full">
                   <RotateCcw size={10} /> Returned {job.rework_count}x
                 </span>
               )}
             </div>
             <span
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold shrink-0 ml-4"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-base font-semibold shrink-0 ml-4"
               style={{ color: status.color, background: status.bg }}
             >
               <StatusIcon size={12} /> {status.label}
@@ -155,23 +158,23 @@ export default function JobDetailPage() {
             {job.site_name && (
               <div className="inline-flex items-center gap-1.5 bg-white border border-border rounded-lg px-3 py-2">
                 <Building2 size={13} className="text-text-muted shrink-0" />
-                <span className="text-[13px] font-medium text-text-primary">{job.site_name}</span>
+                <span className="text-md font-medium text-text-primary">{job.site_name}</span>
               </div>
             )}
             <div className="inline-flex items-center gap-2 bg-white border border-border rounded-lg px-3 py-2">
               <div className="w-5 h-5 rounded-full bg-accent-light flex items-center justify-center shrink-0">
-                <span className="text-[9px] font-bold text-accent">
+                <span className="text-2xs font-bold text-accent">
                   {(job.assigned_to_name || job.assigned_to_email || "?")[0].toUpperCase()}
                 </span>
               </div>
-              <span className="text-[13px] font-medium text-text-primary">
+              <span className="text-md font-medium text-text-primary">
                 {job.assigned_to_name || job.assigned_to_email || "Unassigned"}
               </span>
             </div>
             {job.due_date && (
               <div className="inline-flex items-center gap-1.5 bg-white border border-border rounded-lg px-3 py-2">
                 <Calendar size={13} className="text-text-muted" />
-                <span className="text-[13px] font-medium text-text-primary">
+                <span className="text-md font-medium text-text-primary">
                   {new Date(job.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </span>
               </div>
@@ -179,7 +182,7 @@ export default function JobDetailPage() {
             {job.location && (
               <div className="inline-flex items-center gap-1.5 bg-white border border-border rounded-lg px-3 py-2">
                 <MapPin size={13} className="text-text-muted shrink-0" />
-                <span className="text-[13px] font-medium text-text-primary">{job.location}</span>
+                <span className="text-md font-medium text-text-primary">{job.location}</span>
               </div>
             )}
           </div>
@@ -188,8 +191,8 @@ export default function JobDetailPage() {
           {totalFields > 0 && (
             <div className="mb-5">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium text-text-secondary">Completion</span>
-                <span className="text-[12px] font-semibold text-text-primary">{totalCompleted}/{totalFields} fields</span>
+                <span className="text-base font-medium text-text-secondary">Completion</span>
+                <span className="text-base font-semibold text-text-primary">{totalCompleted}/{totalFields} fields</span>
               </div>
               <div className="h-1.5 bg-border rounded-full overflow-hidden">
                 <div
@@ -206,13 +209,13 @@ export default function JobDetailPage() {
           {/* Instructions */}
           {job.instructions && (
             <div className="bg-accent-light/50 border border-accent/10 rounded-lg px-4 py-3 mb-5">
-              <p className="text-[12px] font-semibold text-accent mb-1">Instructions</p>
-              <p className="text-[13px] text-text-primary leading-relaxed whitespace-pre-wrap">{job.instructions}</p>
+              <p className="text-base font-semibold text-accent mb-1">Instructions</p>
+              <p className="text-md text-text-primary leading-relaxed whitespace-pre-wrap">{job.instructions}</p>
             </div>
           )}
 
           {/* Action buttons — admin/owner only */}
-          {can.manageJobs(vizUser) && (isPending || isSubmitted) && (
+          {can.manageJobs(vizUser, myGroupRole) && (isPending || isSubmitted) && (
             <div className="flex flex-wrap gap-2.5">
               {isSubmitted && (
                 <>
@@ -239,29 +242,30 @@ export default function JobDetailPage() {
         </div>
 
         {/* Task sections */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-[15px] font-semibold text-text-primary">Submitted Data</h2>
-              <p className="text-[12px] text-text-muted mt-0.5">Responses captured for each task in the workflow</p>
+              <h2 className="text-xl font-semibold text-text-primary">Submitted Data</h2>
+              <p className="text-base text-text-muted mt-0.5">{tasks.length} task{tasks.length !== 1 ? "s" : ""} · {totalCompleted}/{totalFields} fields completed</p>
             </div>
-            <span className="text-[12px] font-medium text-text-muted">{tasks.length} task{tasks.length !== 1 ? "s" : ""}</span>
           </div>
           {tasks.length === 0 ? (
             <div className="bg-white rounded-xl border border-border p-8 text-center">
-              <p className="text-[14px] text-text-muted">No tasks configured in the workflow template.</p>
+              <p className="text-lg text-text-muted">No tasks configured in the workflow template.</p>
             </div>
           ) : (
-            tasks.map((task, i) => (
-              <TaskSection
-                key={task.id}
-                task={task}
-                taskData={submissions[task.id]}
-                index={i}
-                total={tasks.length}
-                reworkComment={reworkComments[task.id]}
-              />
-            ))
+            <div className="bg-white rounded-xl border border-border overflow-hidden">
+              {tasks.map((task, i) => (
+                <TaskSection
+                  key={task.id}
+                  task={task}
+                  taskData={submissions[task.id]}
+                  index={i}
+                  total={tasks.length}
+                  reworkComment={reworkComments[task.id]}
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -302,6 +306,6 @@ export default function JobDetailPage() {
         loading={actionLoading}
         currentAssignee={job.assigned_to}
       />
-    </AppShell>
+    </ProjectShell>
   );
 }

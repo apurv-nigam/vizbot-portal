@@ -129,7 +129,7 @@ export default function InvitePage() {
 
         <Card>
           <CardContent className="p-9">
-            <h1 className="text-[22px] font-bold text-text-primary tracking-[-0.3px] mb-6 text-center">
+            <h1 className="text-3xl font-bold text-text-primary tracking-[-0.3px] mb-6 text-center">
               You've been invited to join
             </h1>
 
@@ -141,10 +141,10 @@ export default function InvitePage() {
                     <Building2 size={18} className="text-accent" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[18px] font-bold text-text-primary tracking-[-0.3px]">
+                    <p className="text-2xl font-bold text-text-primary tracking-[-0.3px]">
                       {invitation.org_name}
                     </p>
-                    <p className="text-[13px] text-text-secondary mt-0.5">
+                    <p className="text-md text-text-secondary mt-0.5">
                       Role: <span className="capitalize font-medium">{invitation.role}</span>
                       {invitation.invited_by_name && (
                         <> &middot; Invited by {invitation.invited_by_name}</>
@@ -153,7 +153,7 @@ export default function InvitePage() {
                   </div>
                 </div>
                 {invitation.email && (
-                  <p className="text-[12px] text-text-muted mt-3 pt-3 border-t border-border">
+                  <p className="text-base text-text-muted mt-3 pt-3 border-t border-border">
                     This invitation is for <span className="font-medium text-text-secondary font-mono">{invitation.email}</span>
                   </p>
                 )}
@@ -166,10 +166,10 @@ export default function InvitePage() {
                 onClick={handleLogin}
                 className="w-full rounded-lg border-[1.5px] border-border bg-white px-5 py-3.5 text-left transition-all duration-200 hover:border-border-hover hover:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer"
               >
-                <p className="text-[14px] font-semibold text-text-primary">
+                <p className="text-lg font-semibold text-text-primary">
                   I already have a Vizbot account
                 </p>
-                <p className="text-[13px] text-text-muted mt-0.5">
+                <p className="text-md text-text-muted mt-0.5">
                   Log in to accept
                 </p>
               </button>
@@ -178,10 +178,10 @@ export default function InvitePage() {
                 onClick={handleSignup}
                 className="w-full rounded-lg bg-accent px-5 py-3.5 text-left transition-all duration-200 hover:bg-accent-hover shadow-[0_1px_2px_rgba(91,95,199,0.3)] cursor-pointer"
               >
-                <p className="text-[14px] font-semibold text-white">
+                <p className="text-lg font-semibold text-white">
                   I'm new to Vizbot
                 </p>
-                <p className="text-[13px] text-white/70 mt-0.5">
+                <p className="text-md text-white/70 mt-0.5">
                   Create an account to join
                 </p>
               </button>
@@ -203,7 +203,7 @@ function Logo() {
         >
           <span className="text-white font-extrabold text-sm">V</span>
         </div>
-        <span className="text-[17px] font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
+        <span className="text-xl font-bold text-text-primary tracking-[-0.5px]">Vizbot</span>
       </div>
     </div>
   );
@@ -220,7 +220,7 @@ function SpinnerScreen({ text }) {
           <span className="text-white font-extrabold text-sm">V</span>
         </div>
         <Loader2 size={16} className="animate-spin text-text-muted" />
-        <p className="text-[13px] font-medium text-text-muted">{text}</p>
+        <p className="text-md font-medium text-text-muted">{text}</p>
       </div>
     </div>
   );
@@ -236,8 +236,8 @@ function ErrorScreen({ title, message, onBack }) {
             <div className="h-10 w-10 rounded-full bg-[#FEF2F2] mx-auto mb-4 flex items-center justify-center">
               <AlertCircle size={18} className="text-[#DC2626]" />
             </div>
-            <h1 className="text-[15px] font-[620] text-text-primary mb-1 tracking-[-0.15px]">{title}</h1>
-            <p className="text-[14px] text-text-secondary mb-5 leading-relaxed">{message}</p>
+            <h1 className="text-xl font-[620] text-text-primary mb-1 tracking-[-0.15px]">{title}</h1>
+            <p className="text-lg text-text-secondary mb-5 leading-relaxed">{message}</p>
             <Button variant="secondary" onClick={onBack}>Back to home</Button>
           </CardContent>
         </Card>

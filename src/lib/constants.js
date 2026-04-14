@@ -56,7 +56,7 @@ export const ORG_ROLE_CONFIG = {
   member: { label: "Member", color: "var(--color-text-secondary)", bg: "var(--color-canvas)" },
 };
 
-// ── Group roles ──
+// ── Project roles (groups inherit from project — no separate group roles) ──
 export const ROLE_CONFIG = {
   admin: { label: "Admin", color: "var(--color-accent)", bg: "var(--color-accent-light)" },
   surveyor: { label: "Surveyor", color: "var(--color-text-secondary)", bg: "var(--color-canvas)" },

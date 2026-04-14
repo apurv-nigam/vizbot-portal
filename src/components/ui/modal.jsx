@@ -17,8 +17,8 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, description, co
   return (
     <Modal open={open} onClose={onClose}>
       <div className="p-6">
-        <h3 className="text-[16px] font-semibold text-text-primary mb-2">{title}</h3>
-        <p className="text-[14px] text-text-secondary mb-6">{description}</p>
+        <h3 className="text-xl font-semibold text-text-primary mb-2">{title}</h3>
+        <p className="text-lg text-text-secondary mb-6">{description}</p>
         <div className="flex justify-end gap-2.5">
           <Button variant="secondary" size="sm" onClick={onClose} disabled={loading}>Cancel</Button>
           <Button variant={confirmVariant} size="sm" onClick={onConfirm} disabled={loading}>

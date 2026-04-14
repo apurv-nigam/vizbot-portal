@@ -31,8 +31,8 @@ export default function ReworkModal({ open, onClose, tasks, onSubmit, loading })
   return (
     <Modal open={open} onClose={onClose}>
       <div className="p-6">
-        <h3 className="text-[16px] font-semibold text-text-primary mb-1">Send Back for Rework</h3>
-        <p className="text-[13px] text-text-secondary mb-5">Select the tasks that need revision and add feedback for the field agent.</p>
+        <h3 className="text-xl font-semibold text-text-primary mb-1">Send Back for Rework</h3>
+        <p className="text-md text-text-secondary mb-5">Select the tasks that need revision and add feedback for the field agent.</p>
 
         <div className="space-y-2.5 mb-6 max-h-[400px] overflow-y-auto">
           {tasks.map((task, i) => (
@@ -52,8 +52,8 @@ export default function ReworkModal({ open, onClose, tasks, onSubmit, loading })
                   <span className="text-xs">{task.icon || "📋"}</span>
                 </div>
                 <div className="text-left">
-                  <p className="text-[11px] text-text-muted">Task {i + 1}</p>
-                  <p className="text-[13px] font-medium text-text-primary">{task.name}</p>
+                  <p className="text-sm text-text-muted">Task {i + 1}</p>
+                  <p className="text-md font-medium text-text-primary">{task.name}</p>
                 </div>
               </button>
               {selected[task.id] && (
@@ -63,7 +63,7 @@ export default function ReworkModal({ open, onClose, tasks, onSubmit, loading })
                     onChange={(e) => setComments({ ...comments, [task.id]: e.target.value })}
                     placeholder="What needs to be fixed..."
                     rows={2}
-                    className="w-full rounded-lg border-[1.5px] border-border bg-white px-3 py-2 text-[13px] text-text-primary placeholder:text-text-disabled focus:border-[#CA8A04] focus:outline-none focus:shadow-[0_0_0_3px_rgba(202,138,4,0.1)] resize-none transition-all duration-200"
+                    className="w-full rounded-lg border-[1.5px] border-border bg-white px-3 py-2 text-md text-text-primary placeholder:text-text-disabled focus:border-[#CA8A04] focus:outline-none focus:shadow-[0_0_0_3px_rgba(202,138,4,0.1)] resize-none transition-all duration-200"
                   />
                 </div>
               )}

@@ -169,7 +169,7 @@ export default function ORIViewer({ dataUrl, s3Config, className }) {
         <div className="h-10 w-10 rounded-full bg-[#FEF2F2] flex items-center justify-center mb-3">
           <AlertCircle size={18} className="text-[#DC2626]" />
         </div>
-        <p className="text-[14px] text-text-secondary mb-4 text-center max-w-xs">{error}</p>
+        <p className="text-lg text-text-secondary mb-4 text-center max-w-xs">{error}</p>
         <Button
           variant="secondary"
           size="sm"
@@ -188,7 +188,7 @@ export default function ORIViewer({ dataUrl, s3Config, className }) {
       {loading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/80">
           <Loader2 size={20} className="animate-spin text-accent mb-2" />
-          <p className="text-[13px] font-medium text-text-muted">Loading map...</p>
+          <p className="text-md font-medium text-text-muted">Loading map...</p>
         </div>
       )}
     </div>
