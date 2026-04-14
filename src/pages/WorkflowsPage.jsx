@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Plus, Loader2, FolderOpen } from "lucide-react";
 import { useWorkflows } from "@/lib/queries";
 import { useUser } from "@/auth/UserProvider";
@@ -37,8 +37,10 @@ function WorkflowCard({ workflow, onClick }) {
 
 export default function WorkflowsPage() {
   const navigate = useNavigate();
+  const { id: projectId } = useParams();
   const { vizUser } = useUser();
-  const { data: workflows = [], isLoading } = useWorkflows();
+  const { data: workflows = [], isLoading } = useWorkflows(projectId ? { project_id: projectId } : {});
+  const basePath = projectId ? `/projects/${projectId}` : "";
 
   return (
     <AppShell>
@@ -50,7 +52,7 @@ export default function WorkflowsPage() {
             <p className="text-[13px] text-text-secondary mt-1">Checklist templates that define what field agents capture</p>
           </div>
           {can.createWorkflow(vizUser) && (
-            <Button size="sm" className="gap-1.5" onClick={() => navigate("/workflows/new")}>
+            <Button size="sm" className="gap-1.5" onClick={() => navigate(`${basePath}/workflows/new`)}>
               <Plus size={13} /> New Workflow
             </Button>
           )}
@@ -71,7 +73,7 @@ export default function WorkflowsPage() {
                 {can.createWorkflow(vizUser) ? "Create your first workflow template to define what your field agents should capture." : "No workflow templates have been created yet."}
               </p>
               {can.createWorkflow(vizUser) && (
-                <Button onClick={() => navigate("/workflows/new")} className="gap-2">
+                <Button onClick={() => navigate(`${basePath}/workflows/new`)} className="gap-2">
                   <Plus size={14} /> Create First Workflow
                 </Button>
               )}
@@ -80,7 +82,7 @@ export default function WorkflowsPage() {
         ) : (
           <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
             {workflows.map((w) => (
-              <WorkflowCard key={w.id} workflow={w} onClick={() => navigate(`/workflows/${w.id}`)} />
+              <WorkflowCard key={w.id} workflow={w} onClick={() => navigate(`${basePath}/workflows/${w.id}`)} />
             ))}
           </div>
         )}

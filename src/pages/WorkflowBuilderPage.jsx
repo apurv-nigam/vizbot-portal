@@ -246,7 +246,9 @@ function SortableTaskEditor({ task, onChange, onRemove, onReorderFields }) {
 export default function WorkflowBuilderPage() {
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id: projectId, wid } = useParams();
+  const id = wid || projectId;
+  const basePath = wid ? `/projects/${projectId}` : "";
 
   const [workflowName, setWorkflowName] = useState("");
   const [layout, setLayout] = useState("multi_page");
@@ -330,7 +332,7 @@ export default function WorkflowBuilderPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <button onClick={() => navigate(`/workflows/${id}`)} className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors cursor-pointer mb-2">
+            <button onClick={() => navigate(`${basePath}/workflows/${id}`)} className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors cursor-pointer mb-2">
               <ArrowLeft size={14} /> {workflowName}
             </button>
             <h1 className="text-[24px] font-bold text-text-primary tracking-[-0.3px]">Capture Workflow</h1>

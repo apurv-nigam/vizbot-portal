@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import AppShell from "@/components/ProjectShell";
@@ -18,6 +18,8 @@ const ASSET_TYPES = [
 export default function CreateWorkflowPage() {
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
+  const { id: projectId } = useParams();
+  const basePath = projectId ? `/projects/${projectId}` : "";
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,12 +33,10 @@ export default function CreateWorkflowPage() {
     setError(null);
     try {
       const token = await getAccessTokenSilently();
-      const project = await apiRequest("/api/v1/workflows", {
-        token,
-        method: "POST",
-        body: { name: name.trim(), description: description.trim() || null, asset_type: assetType },
-      });
-      navigate(`/workflows/${project.id}/builder`, { replace: true });
+      const body = { name: name.trim(), description: description.trim() || null, asset_type: assetType };
+      if (projectId) body.project_id = projectId;
+      const workflow = await apiRequest("/api/v1/workflows", { token, method: "POST", body });
+      navigate(`${basePath}/workflows/${workflow.id}/builder`, { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -48,7 +48,7 @@ export default function CreateWorkflowPage() {
     <AppShell>
       <div className="max-w-[560px] mx-auto">
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(`${basePath}/workflows`)}
           className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-text-secondary transition-colors duration-200 cursor-pointer mb-6"
         >
           <ArrowLeft size={14} />

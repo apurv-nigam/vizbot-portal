@@ -56,9 +56,11 @@ function TaskCard({ task, index }) {
 
 export default function WorkflowDetailPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id: projectId, wid } = useParams();
+  const workflowId = wid || projectId;
+  const basePath = wid ? `/projects/${projectId}` : "";
 
-  const { data: workflow, isLoading, error: workflowError } = useWorkflow(id);
+  const { data: workflow, isLoading, error: workflowError } = useWorkflow(workflowId);
 
   if (isLoading) {
     return (
@@ -75,7 +77,7 @@ export default function WorkflowDetailPage() {
       <AppShell>
         <div className="max-w-[600px] mx-auto text-center py-20">
           <p className="text-[14px] text-[#DC2626] mb-4">{workflowError?.message || "Workflow not found"}</p>
-          <Button variant="secondary" onClick={() => navigate("/workflows")}>Back to Workflows</Button>
+          <Button variant="secondary" onClick={() => navigate(`${basePath}/workflows`)}>Back to Workflows</Button>
         </div>
       </AppShell>
     );
@@ -91,7 +93,7 @@ export default function WorkflowDetailPage() {
       <div className="max-w-[800px] mx-auto px-6 lg:px-9 py-6">
         {/* Back */}
         <button
-          onClick={() => navigate("/workflows")}
+          onClick={() => navigate(`${basePath}/workflows`)}
           className="flex items-center gap-1.5 text-[13px] font-medium text-text-secondary hover:text-text-primary transition-colors cursor-pointer mb-5"
         >
           <ArrowLeft size={14} /> Workflow Templates
@@ -108,7 +110,7 @@ export default function WorkflowDetailPage() {
               <p className="text-[13px] text-text-secondary mt-1">{workflow.description}</p>
             )}
           </div>
-          <Button size="sm" className="gap-1.5 shrink-0" onClick={() => navigate(`/workflows/${id}/builder`)}>
+          <Button size="sm" className="gap-1.5 shrink-0" onClick={() => navigate(`${basePath}/workflows/${workflowId}/builder`)}>
             <Settings size={13} /> Edit Workflow
           </Button>
         </div>
@@ -138,7 +140,7 @@ export default function WorkflowDetailPage() {
           <div className="flex items-center gap-2 mb-6">
             <p className="text-[13px] text-text-secondary">{workflow.job_count} job{workflow.job_count !== 1 ? "s" : ""} using this workflow</p>
             <span className="text-text-muted">·</span>
-            <button onClick={() => navigate(`/jobs?workflow_id=${id}`)} className="text-[13px] font-medium text-accent cursor-pointer hover:underline">
+            <button onClick={() => navigate(`${basePath}/jobs?workflow_id=${workflowId}`)} className="text-[13px] font-medium text-accent cursor-pointer hover:underline">
               View jobs
             </button>
           </div>
@@ -152,7 +154,7 @@ export default function WorkflowDetailPage() {
           {tasks.length === 0 ? (
             <div className="bg-white border border-border rounded-[14px] p-12 text-center">
               <p className="text-[14px] text-text-muted mb-4">No tasks defined yet</p>
-              <Button variant="secondary" size="sm" onClick={() => navigate(`/workflows/${id}/builder`)}>
+              <Button variant="secondary" size="sm" onClick={() => navigate(`${basePath}/workflows/${workflowId}/builder`)}>
                 Open Workflow Builder
               </Button>
             </div>
